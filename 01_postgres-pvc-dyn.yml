@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: postgresql-mn-pvc
+ name: postgresql-<your-initials>-pvc
  labels:
    billingType: hourly
    region: eu-de
