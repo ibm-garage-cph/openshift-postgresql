@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgresql-pod
+  namespace: dev-mn
+  labels:
+    app: postgresql
+spec:
+  initContainers:
+  - name: chmod-er
+    image: busybox:latest
+    command: ["/bin/chown"]
+    args: ["-R", "1001", "/bitnami/postgresql/data"]
+    volumeMounts:
+    - name: custom-volume
+      mountPath: /bitnami/postgresql/data
+  containers:
+  - name: postgresql
+    image: bitnami/postgresql
+    volumeMounts:
+      - name : custom-volume
+        mountPath: /bitnami/postgresql/data
+    ports:
+    - containerPort: 5432
+    env:
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-password
+              key: POSTGRESQL_PASSWORD
+  volumes:
+    - name: custom-volume
+      persistentVolumeClaim: 
+        claimName:  postgresql-mn-pvc
